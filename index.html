@@ -119,6 +119,7 @@ body { font-family: 'Open Sans', sans-serif; background: #fff; color: #000; min-
         <span class="speed-param">🖼️ Placeholder images only</span>
         <span class="speed-param">📦 Max 3 sections</span>
         <span class="speed-param">⭐ Max 1 special feature</span>
+        <span class="speed-param">🛡️ JS String Safety</span>
       </div>
     </div>
   </div>
@@ -166,7 +167,6 @@ const steps = [
   { id:'audience', label:'Step 2', question:'Who is the audience?', type:'single', options:[
     {icon:'👔',label:'Potential Employers',value:'potential employers or recruiters'},
     {icon:'🛒',label:'Customers / Clients',value:'customers or potential clients'},
-    {icon:'👨‍👩‍👧',label:'General Public',value:'the general public'},
     {icon:'🎓',label:'Students / Learners',value:'students and learners'},
     {icon:'🤝',label:'Other Creators',value:'fellow creators and collaborators'},
     {icon:'🌍',label:'Everyone',value:'a broad general audience'},
@@ -205,14 +205,13 @@ const steps = [
     {icon:'⭐',label:'Testimonials',value:'Testimonials section'},
     {icon:'📬',label:'Contact',value:'Contact section'},
     {icon:'🖼️',label:'Gallery / Portfolio',value:'Gallery or Portfolio section'},
-    {icon:'📝',label:'Blog Preview',value:'Blog Preview section'},
     {icon:'❓',label:'FAQ',value:'FAQ section'},
   ]},
   { id:'feature', label:'Step 7', question:'Select up to 1 special feature to include:', type:'feature', options:[
-    {icon:'📋',label:'Contact Form',value:'a contact form',desc:'Fields for name, email & message.'},
-    {icon:'📅',label:'Events Calendar',value:'an events calendar',desc:'Displays upcoming events.'},
+    {icon:'📋',label:'Contact / Updates Form',value:'a contact or event updates signup form',desc:'Fields for name, email & message, or to receive event updates.'},
     {icon:'💬',label:'Live Chat Widget',value:'a live chat widget',desc:'A chat bubble in the corner.'},
     {icon:'🔐',label:'Login Dashboard',value:'a login and dashboard UI',desc:'A login screen with a dashboard.'},
+    {icon:'👥',label:'Live Visitor Counter',value:'a live visitor counter',desc:'Displays a real-time visitor count on the page.'},
     {icon:'🚫',label:'No Special Feature',value:null,desc:'Keep it clean and simple.'},
   ]},
 ];
@@ -293,6 +292,7 @@ function buildPrompt() {
   p += '• Do not exceed 3 page sections.\n';
   p += '• Make it fully responsive (mobile + desktop).\n';
   p += '• The result should be beautiful, polished, and ready to open directly in a browser.\n';
+  p += '• JavaScript Safety: All JS strings containing natural language (names, descriptions, FAQ answers, copy) must use either template literals or escaped apostrophes (\\\'). Never use single-quoted strings for prose content.\n';
   return p;
 }
 
