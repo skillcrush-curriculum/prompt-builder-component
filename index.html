@@ -153,7 +153,7 @@ body { font-family: 'Open Sans', sans-serif; background: #fff; color: #000; min-
 
 <script>
 const steps = [
-  { id:'type', label:'Step 1', question:'What kind of website?', type:'single', options:[
+  { id:'type', label:'Question 1', question:'What kind of website?', type:'single', options:[
     {icon:'💼',label:'Portfolio',value:'a personal portfolio website'},
     {icon:'🛍️',label:'Small Business',value:'a small business landing page'},
     {icon:'🎨',label:'Creative / Art',value:'a creative art showcase website'},
@@ -163,14 +163,14 @@ const steps = [
     {icon:'💡',label:'Startup / Product',value:'a startup or product launch page'},
     {icon:'🐾',label:'Hobby / Passion',value:'a hobby or passion project website'},
   ]},
-  { id:'audience', label:'Step 2', question:'Who is the audience?', type:'single', options:[
+  { id:'audience', label:'Question 2', question:'Who is the audience?', type:'single', options:[
     {icon:'👔',label:'Potential Employers',value:'potential employers or recruiters'},
     {icon:'🛒',label:'Customers / Clients',value:'customers or potential clients'},
     {icon:'🎓',label:'Students / Learners',value:'students and learners'},
     {icon:'🤝',label:'Other Creators',value:'fellow creators and collaborators'},
     {icon:'🌍',label:'Everyone',value:'a broad general audience'},
   ]},
-  { id:'vibe', label:'Step 3', question:'What is the vibe?', type:'single', options:[
+  { id:'vibe', label:'Question 3', question:'What is the vibe?', type:'single', options:[
     {icon:'✨',label:'Clean & Modern',value:'clean, modern, and professional'},
     {icon:'🌸',label:'Soft & Friendly',value:'soft, warm, and friendly'},
     {icon:'🖤',label:'Bold & Dramatic',value:'bold, dramatic, and striking'},
@@ -180,7 +180,7 @@ const steps = [
     {icon:'🔬',label:'Minimal & Focused',value:'ultra-minimal and focused'},
     {icon:'🎨',label:'Artistic & Creative',value:'expressive, artistic, and creative'},
   ]},
-  { id:'palette', label:'Step 4', question:'What should the color palette be?', type:'palette', options:[
+  { id:'palette', label:'Question 4', question:'What should the color palette be?', type:'palette', options:[
     {label:'Ocean Blues',value:'ocean blues (#0077B6, #90E0EF, #FFFFFF)',colors:['#0077B6','#90E0EF','#CAEDF5']},
     {label:'Warm Sunset',value:'warm sunset tones (#FF6B35, #F7C59F, #FFFBF5)',colors:['#FF6B35','#F7C59F','#FFF3E8']},
     {label:'Forest & Earth',value:'forest and earth tones (#2D6A4F, #74C69D, #F9F3E3)',colors:['#2D6A4F','#74C69D','#F9F3E3']},
@@ -190,14 +190,14 @@ const steps = [
     {label:'Deep Navy',value:'deep navy and gold (#1B2A4A, #E8B86D, #F9F6EF)',colors:['#1B2A4A','#E8B86D','#F5F0E5']},
     {label:'Blush & Sand',value:'blush pink and sand (#E8A0BF, #F5DEB3, #FFFDF8)',colors:['#E8A0BF','#F5DEB3','#FFF9F0']},
   ]},
-  { id:'layout', label:'Step 5', question:'Choose a layout style:', type:'single', options:[
+  { id:'layout', label:'Question 5', question:'Choose a layout style:', type:'single', options:[
     {icon:'⬛',label:'Centered Column',value:'a centered single-column layout'},
     {icon:'◼◼',label:'Two Column',value:'a two-column layout with sidebar'},
     {icon:'▦',label:'Card Grid',value:'a card-based grid layout'},
     {icon:'🖼️',label:'Full-Width Hero',value:'a full-width hero banner layout'},
     {icon:'📰',label:'Magazine Style',value:'a magazine-style editorial layout'},
   ]},
-  { id:'sections', label:'Step 6', question:'What sections should be included? (Choose up to 3)', type:'multi', max:3, options:[
+  { id:'sections', label:'Question 6', question:'What sections should be included? (Choose up to 3)', type:'multi', max:3, options:[
     {icon:'🏠',label:'Hero / Banner',value:'Hero / Banner section'},
     {icon:'👤',label:'About',value:'About section'},
     {icon:'🛠️',label:'Services / Work',value:'Services or Work section'},
@@ -206,7 +206,7 @@ const steps = [
     {icon:'🖼️',label:'Gallery / Portfolio',value:'Gallery or Portfolio section'},
     {icon:'❓',label:'FAQ',value:'FAQ section'},
   ]},
-  { id:'feature', label:'Step 7', question:'Select up to 1 special feature to include:', type:'feature', options:[
+  { id:'feature', label:'Question 7', question:'Select up to 1 special feature to include:', type:'feature', options:[
     {icon:'📋',label:'Contact / Updates Form',value:'a contact or event updates signup form',desc:'Fields for name, email & message, or to receive event updates.'},
     {icon:'💬',label:'Live Chat Widget',value:'a live chat widget',desc:'A chat bubble in the corner.'},
     {icon:'🔐',label:'Login Dashboard',value:'a login and dashboard UI',desc:'A login screen with a dashboard.'},
@@ -254,10 +254,19 @@ function renderSteps() {
       }).join('') + '</div>';
     }
     let navHTML = '<div class="step-nav">';
-    if (i > 0) navHTML += '<button class="nav-btn" onclick="goStep(' + (i-1) + ')">‹ PREV STEP</button>';
+    if (i > 0) navHTML += '<button class="nav-btn" onclick="goStep(' + (i-1) + ')">‹ PREV QUESTION</button>';
     else navHTML += '<span></span>';
-    if (i < steps.length - 1) navHTML += '<button class="nav-btn primary" onclick="goStep(' + (i+1) + ')" ' + (!answers[step.id]?'disabled':'') + '>NEXT STEP ›</button>';
-    else navHTML += '<button class="nav-btn primary" onclick="finalizePrompt()" ' + (!answers[step.id]?'disabled':'') + '>✓ FINALIZE PROMPT</button>';
+    if (i < steps.length - 1) {
+      // Only show Next Question if user navigated back to review a past answer
+      const isReviewing = isActive && answers[step.id] !== undefined && i < Math.max(...Object.keys(answers).map(id => steps.findIndex(s=>s.id===id)));
+      if (isReviewing) {
+        navHTML += '<button class="nav-btn primary" onclick="goStep(' + (i+1) + ')">NEXT QUESTION ›</button>';
+      } else {
+        navHTML += '<span></span>';
+      }
+    } else {
+      navHTML += '<button class="nav-btn primary" onclick="finalizePrompt()" ' + (!answers[step.id]?'disabled':'') + '>✓ FINALIZE PROMPT</button>';
+    }
     navHTML += '</div>';
     block.innerHTML = '<div class="step-header"><div class="step-num ' + numClass + '">' + numContent + '</div><span class="step-label ' + (isActive||isDone?'active':'') + '">' + step.label + '</span></div><div class="step-body ' + bodyClass + '"><div class="step-question">' + step.question + '</div>' + bodyHTML + navHTML + '</div>';
     container.appendChild(block);
